@@ -1,0 +1,145 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+from sklearn import datasets 
+import os
+os.chdir("C:\\Users\\User\\Downloads\\B10\\Assignments\\python")
+os.getcwd()
+df=pd.read_excel("Interest Group Spending 2000-2016.xlsx")
+df.shape
+len(df.columns)
+len(df)
+df.head()
+df.columns
+df.info()
+
+# =============================================================================
+# 1-Interset group wise calculate total spents 
+# =============================================================================
+
+df.groupby(['Interest_Group'])['Total_Amount'].sum()
+#output:
+Interest_Group 
+Accountants             73831761
+Agricultural Svcs       48871695
+Air Transport           74834042
+Alcohol                 63043662
+Automotive              76293506
+                       ...
+Securities             325170626
+Telecom Svcs            62493437
+Telephone Utilities     55125671
+Transport Unions        85989269
+Women's Issues          40038949
+Name: Total_Amount , Length: 64, dtype: int64
+
+# =============================================================================
+# 2-Get retired interest group year wise spents
+# =============================================================================
+df[df.Interest_Group=='Retired']
+
+#output:
+     Year Interest_Group  Total_Amount  Dem_%  GOP_%    Democrats  Republicans
+1    2000        Retired      23951174   0.23   0.76   5508770.02  18202892.24
+53   2002        Retired      20873715   0.40   0.60   8349486.00  12524229.00
+101  2004        Retired      41888596   0.63   0.37  26389815.48  15498780.52
+152  2006        Retired      36671495   0.39   0.58  14301883.05  21269467.10
+201  2008        Retired     126058999   0.56   0.44  70593039.44  55465959.56
+252  2010        Retired      40273945   0.56   0.44  22553409.20  17720535.80
+301  2012        Retired      51380451   0.41   0.58  21065984.91  29800661.58
+351  2014        Retired      48332242   0.46   0.54  22232831.32  26099410.68
+400  2016        Retired      27020646   0.30   0.70   8106193.80  18914452.20
+
+# =============================================================================
+# 3-Claculate the Repulicans ratios by year
+# =============================================================================
+df.Republicans.sum()
+#OUTPUT:2672587964.31
+
+df['Republicans_ratio']=(df['Republicans']/2672587964.31)
+
+df.groupby(['Year'])['Republicans_ratio'].sum()
+#output:
+Year
+2000    0.080336
+2002    0.074998
+2004    0.099556
+2006    0.129457
+2008    0.160991
+2010    0.089806
+2012    0.148137
+2014    0.149752
+2016    0.066967
+Name: Republicans_ratio, dtype: float64
+
+# =============================================================================
+# 4-Year wise calcualate Pharmacetucal interest group amounts
+# =============================================================================
+a=df[df.Interest_Group=='Pharmaceutical']
+a[['Year','Interest_Group','Total_Amount']]
+
+#output:
+     Year  Interest_Group  Total_Amount
+19   2000  Pharmaceutical       7005180
+65   2002  Pharmaceutical       8022434
+116  2004  Pharmaceutical      11143341
+159  2006  Pharmaceutical      14963214
+215  2008  Pharmaceutical      20566697
+258  2010  Pharmaceutical      18288677
+309  2012  Pharmaceutical      18984226
+359  2014  Pharmaceutical      19587505
+409  2016  Pharmaceutical       7548206
+
+# =============================================================================
+# 5-How much amount spent on Agriculture post 2010 year
+# =============================================================================
+post=df[(df.Year >2010)]
+p=post[post.Interest_Group=='Agricultural Svcs']
+p[['Year','Interest_Group','Total_Amount']]
+
+#output:
+     Year     Interest_Group  Total_Amount
+337  2012  Agricultural Svcs       6928143
+388  2014  Agricultural Svcs       7068300
+435  2016  Agricultural Svcs       2640266
+# =============================================================================
+# 6-Create trends of Air Transport amounts by year
+# =============================================================================
+
+t=df[df.Interest_Group=='Air Transport']
+x=t['Year']
+y=t['Total_Amount']
+plt.plot(x,y)
+plt.xlabel('Year')
+plt.ylabel('Total_Amount')
+plt.title('trend of Air Transport amounts by year')
+plt.show()
+
+# =============================================================================
+# 7-Year and Interest group wise find the ratios of spents in amount
+# =============================================================================
+df.Total_Amount.sum()
+#OUTPUT:5674320868
+
+df['Total_Amount_ratio']=(df['Total_Amount']/5674320868)
+
+df.groupby(['Year','Interest_Group'])['Total_Amount_ratio'].sum()
+
+#output:
+Year  Interest_Group     
+2000  Accountants            0.001226
+      Agricultural Svcs      0.000663
+      Air Transport          0.001214
+      Alcohol                0.000890
+      Automotive             0.001353
+                              ...
+2016  Retired                0.004762
+      Securities             0.003233
+      Telecom Svcs           0.000633
+      Telephone Utilities    0.000391
+      Transport Unions       0.000555
+Name: Total_Amount_ratio, Length: 450, dtype: float64
+
+
